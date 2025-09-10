@@ -62,32 +62,25 @@ export default function Dashboard() {
   };
 
   const handleCustomerPortal = async () => {
-    if (!customerId) {
-      alert('Customer ID not available. Please contact support.');
-      return;
-    }
-
     try {
-      const response = await fetch('/api/customer-portal', {
+      const response = await fetch('/api/portal', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ customerId }),
       });
 
       const data = await response.json();
       
-      if (data.url) {
+      if (response.ok && data.url) {
         window.location.href = data.url;
-      } else if (data.error === 'Customer portal not configured') {
-        alert(`${data.message}\n\nPlease visit: ${data.configUrl}`);
       } else {
-        alert('Failed to create customer portal session');
+        console.error('Failed to create portal session:', data.error);
+        alert('Failed to open billing portal. Please try again.');
       }
     } catch (error) {
       console.error('Error creating customer portal session:', error);
-      alert('Failed to create customer portal session');
+      alert('Failed to open billing portal. Please try again.');
     }
   };
 
@@ -121,14 +114,12 @@ export default function Dashboard() {
             )}
           </div>
           <div className="flex items-center gap-4">
-            {customerId && (
-              <button
-                onClick={handleCustomerPortal}
-                className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition-colors"
-              >
-                Manage Subscription
-              </button>
-            )}
+            <button
+              onClick={handleCustomerPortal}
+              className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition-colors"
+            >
+              Manage Billing
+            </button>
             <UserButton />
           </div>
         </div>

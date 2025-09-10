@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Site Access Subscription",
-  description: "Choose your subscription tier for premium site access",
+  title: "Master N8N - Learn Automation",
+  description: "Master N8N automation with comprehensive tutorials and expert guidance",
 };
 
 export default function RootLayout({
