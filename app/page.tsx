@@ -1,9 +1,12 @@
 'use client';
 
 import { getStripe } from '@/lib/stripe-client';
+import { SignInButton, SignUpButton, UserButton, useUser } from '@clerk/nextjs';
 
 export default function Home() {
-const products = [
+  const { isSignedIn, user } = useUser();
+
+  const products = [
   {
     id: 1,
     priceId: 'price_1S5pDrAikXlKuqX04GErTuad',
@@ -55,6 +58,11 @@ const products = [
 ];
 
   const handleSubscribe = async (priceId: string) => {
+    if (!isSignedIn) {
+      alert('Please sign in first to subscribe');
+      return;
+    }
+
     try {
       const response = await fetch('/api/checkout', {
         method: 'POST',
@@ -63,6 +71,8 @@ const products = [
         },
         body: JSON.stringify({
           priceId: priceId,
+          userId: user?.id,
+          userEmail: user?.emailAddresses[0]?.emailAddress,
         }),
       });
 
@@ -79,8 +89,40 @@ const products = [
   };
 
   return (
-<div className="min-h-screen min-w-full bg-gray-200 flex items-center justify-center text-black p-8">
- <div className="flex gap-8 flex-wrap justify-center">
+    <div className="min-h-screen min-w-full bg-gray-200 text-black">
+      {/* Header */}
+      <div className="bg-white shadow-sm p-4">
+        <div className="max-w-6xl mx-auto flex justify-between items-center">
+          <h1 className="text-xl font-bold">Site Access Subscription</h1>
+          <div className="flex items-center gap-4">
+            {isSignedIn ? (
+              <div className="flex items-center gap-4">
+                <span className="text-sm text-gray-600">
+                  Welcome, {user?.firstName || user?.emailAddresses[0]?.emailAddress}
+                </span>
+                <UserButton />
+              </div>
+            ) : (
+              <div className="flex gap-2">
+                <SignInButton>
+                  <button className="px-4 py-2 text-blue-600 hover:text-blue-700">
+                    Sign In
+                  </button>
+                </SignInButton>
+                <SignUpButton>
+                  <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                    Sign Up
+                  </button>
+                </SignUpButton>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Main content */}
+      <div className="flex items-center justify-center p-8">
+        <div className="flex gap-8 flex-wrap justify-center">
    {products.map((product) => (
      <div key={product.id} className={`max-w-sm bg-white rounded-lg shadow-md p-8 flex flex-col relative ${
        product.id === 2 ? 'ring-2 ring-blue-500 scale-105 shadow-xl' : ''
@@ -135,7 +177,8 @@ const products = [
        </div>
      </div>
    ))}
- </div>
-</div>
+        </div>
+      </div>
+    </div>
   );
 }

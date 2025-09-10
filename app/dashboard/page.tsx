@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useUser, UserButton } from '@clerk/nextjs';
+import { useRouter } from 'next/navigation';
 
 interface MemberStats {
   totalMembers: number;
@@ -9,10 +11,19 @@ interface MemberStats {
 }
 
 export default function Dashboard() {
+  const { isSignedIn, user, isLoaded } = useUser();
+  const router = useRouter();
   const [memberStats, setMemberStats] = useState<MemberStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [customerId, setCustomerId] = useState<string | null>(null);
   const [customerEmail, setCustomerEmail] = useState<string | null>(null);
+
+  // Redirect to sign-in if not authenticated
+  useEffect(() => {
+    if (isLoaded && !isSignedIn) {
+      router.push('/sign-in');
+    }
+  }, [isLoaded, isSignedIn, router]);
 
   useEffect(() => {
     fetchMemberStats();
@@ -80,19 +91,46 @@ export default function Dashboard() {
     }
   };
 
+  // Show loading state while checking authentication
+  if (!isLoaded) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Don't render anything if redirecting
+  if (!isSignedIn) {
+    return null;
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 p-8 text-black">
       <div className="max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">Premium Dashboard</h1>
-          {customerId && (
-            <button
-              onClick={handleCustomerPortal}
-              className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition-colors"
-            >
-              Manage Subscription
-            </button>
-          )}
+          <div>
+            <h1 className="text-3xl font-bold">Premium Dashboard</h1>
+            {user && (
+              <p className="text-gray-600 mt-1">
+                Welcome back, {user.firstName || user.emailAddresses[0]?.emailAddress}
+              </p>
+            )}
+          </div>
+          <div className="flex items-center gap-4">
+            {customerId && (
+              <button
+                onClick={handleCustomerPortal}
+                className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition-colors"
+              >
+                Manage Subscription
+              </button>
+            )}
+            <UserButton />
+          </div>
         </div>
 
         {/* Customer Info Card */}
