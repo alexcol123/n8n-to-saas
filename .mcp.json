@@ -23,14 +23,16 @@
         "MCP_MODE": "stdio",
         "LOG_LEVEL": "error",
         "DISABLE_CONSOLE_OUTPUT": "true",
-        "N8N_API_URL": "https://henrymunoz1.app.n8n.cloud",
-        "N8N_API_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5YWExYWYxZS1iMDY4LTQyMDEtYmM5My0yYzFiMmUwNWZlYTUiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzU2ODM2MDk4LCJleHAiOjE3NTkzNzc2MDB9.4c8KEGMtuWjTShBWG-fYrPWxg4zj-iTLgXqPpO0MF3I"
+        "N8N_API_URL": "${N8N_API_URL}",
+        "N8N_API_KEY": "${N8N_API_KEY}"
       }
     },
     "stripe": {
       "command": "npx",
       "args": ["-y", "@stripe/mcp", "--tools=all"],
-      "env": {}
+      "env": {
+        "STRIPE_SECRET_KEY": "${STRIPE_SECRET_KEY}"
+      }
     }
   }
 }
