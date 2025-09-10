@@ -44,7 +44,7 @@ export default async function FreePage() {
           <div className="bg-white rounded-lg shadow-md p-6 max-w-2xl mx-auto mb-8">
             <div className="flex items-center gap-3 mb-4">
               <span className="text-2xl">🎯</span>
-              <h3 className="text-lg font-semibold">You're on the Free Plan</h3>
+              <h3 className="text-lg font-semibold">You&apos;re on the Free Plan</h3>
             </div>
             <p className="text-gray-600 mb-4">
               You have access to this introductory content. Upgrade to unlock comprehensive N8N tutorials and advanced automation techniques.
@@ -67,7 +67,7 @@ export default async function FreePage() {
             <h3 className="text-2xl font-semibold mb-4">What is N8N?</h3>
             <p className="text-gray-600 mb-6 leading-relaxed">
               N8N is a powerful workflow automation tool that lets you connect different services and automate tasks without writing code. 
-              It's perfect for businesses looking to streamline processes and increase productivity.
+              It&apos;s perfect for businesses looking to streamline processes and increase productivity.
             </p>
             <div className="space-y-3">
               <div className="flex items-center text-sm text-gray-600">
